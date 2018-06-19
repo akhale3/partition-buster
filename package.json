@@ -1,0 +1,23 @@
+{
+  "name": "partition-buster",
+  "version": "1.0.0",
+  "description": "Drop partitions older than a provided cutoff date",
+  "main": "index.js",
+  "scripts": {
+    "prune":"node --harmony -pe \"var P = require('./index'); var p = new P(); p.getPartitions(p.dropPartitions);\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "partition",
+    "drop",
+    "mysql",
+    "cutoff",
+    "prune"
+  ],
+  "author": "Anish Khale",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.22.2",
+    "mysql2": "^1.5.3"
+  }
+}
