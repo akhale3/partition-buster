@@ -8,7 +8,7 @@ const assert = require('assert');
 const PartitionBuster = function () {
   assert.ok(process.env.DB_HOST, 'DB_HOST');
   assert.ok(process.env.DB_USER, 'DB_USER');
-//  assert.ok(process.env.DB_PASSWORD, 'DB_PASSWORD');
+  assert.ok(process.env.DB_PASSWORD, 'DB_PASSWORD');
   assert.ok(process.env.DB_NAME, 'DB_NAME');
   assert.ok(process.env.TABLE_NAME, 'TABLE_NAME');
 
