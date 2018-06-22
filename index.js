@@ -25,18 +25,10 @@ const PartitionBuster = function () {
   }); 
 };
 
-PartitionBuster.prototype.getPartitions = function (callback) {
-  let query = "SELECT GROUP_CONCAT(PARTITION_NAME SEPARATOR ', ') AS partitions";
-  query += " FROM information_schema.partitions WHERE TABLE_SCHEMA='";
-  query += this.database;
-  query += "' AND TABLE_NAME = '";
-  query += this.table;
-  query += "' AND PARTITION_NAME IS NOT NULL AND PARTITION_NAME != 'max'";
-  query += " AND STRCMP(PARTITION_NAME, 'p";
-  query += moment().subtract(this.cutoff, 'day').format('YYYYMMDD');
-  query += "') < 1;";
+PartitionBuster.prototype.prepGroupConcat = function (maxLength, callback) {
+  let query = "SET SESSION group_concat_max_len = " + maxLength;
 
-  debug(`getPartitions Query: ${query}`);
+  debug(`prepGroupConcat Query: ${query}`);
 
   this.connection.query(query, (err, res, fields) => {
     if (err) {
@@ -44,10 +36,37 @@ PartitionBuster.prototype.getPartitions = function (callback) {
       process.exit(1);
     }
 
-    this.partitions = res && res[0] && res[0].partitions;
-
     if (callback) {
       callback(this);
+    }
+  });
+};
+
+PartitionBuster.prototype.getPartitions = function (that, callback) {
+  that = that || this;
+
+  let query = "SELECT GROUP_CONCAT(PARTITION_NAME SEPARATOR ', ') AS partitions";
+  query += " FROM information_schema.partitions WHERE TABLE_SCHEMA='";
+  query += that.database;
+  query += "' AND TABLE_NAME = '";
+  query += that.table;
+  query += "' AND PARTITION_NAME IS NOT NULL AND PARTITION_NAME != 'max'";
+  query += " AND STRCMP(PARTITION_NAME, 'p";
+  query += moment().subtract(that.cutoff, 'day').format('YYYYMMDD');
+  query += "') < 1;";
+
+  debug(`getPartitions Query: ${query}`);
+
+  that.connection.query(query, (err, res, fields) => {
+    if (err) {
+      console.error(`getPartitions Query Error: ${err}`);
+      process.exit(1);
+    }
+
+    that.partitions = res && res[0] && res[0].partitions;
+
+    if (callback) {
+      callback(that);
     }
   });
 };

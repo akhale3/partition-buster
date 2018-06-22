@@ -4,7 +4,7 @@
   "description": "Drop partitions older than a provided cutoff date",
   "main": "index.js",
   "scripts": {
-    "prune":"node --harmony -pe \"var P = require('./index'); var p = new P(); p.getPartitions(p.dropPartitions);\"",
+    "prune":"node --harmony -pe \"var P = require('./index'); var p = new P(); p.prepGroupConcat(65535, function (that) { p.getPartitions(that, p.dropPartitions); });\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
